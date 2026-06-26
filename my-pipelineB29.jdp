@@ -1,21 +1,41 @@
 pipeline {
     agent any
+
+    environment {
+        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+
     stages {
-        stage ('PULL STAGE') {
+
+        stage('PULL STAGE') {
             steps {
-                echo 'Pull Success'
+                git 'https://github.com/vighnahari96/Mynew-Repo.git'
+                echo 'PULL SUCCESS'
             }
         }
-        stage ('BUILD STAGE') {
+
+        stage('BUILD STAGE') {
             steps {
-                echo 'Build Success'
+                dir('backend') {
+                    sh 'java -version'
+                    sh 'mvn clean package -DskipTests'
+                }
+                echo 'BUILD SUCCESS'
             }
         }
         stage ('TEST STAGE') {
             steps {
+	    dir('backend'){
+	     mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=Project-B29 \
+  -Dsonar.projectName='Project-B29' \
+  -Dsonar.host.url=http://13.205.97.14:9000 \
+  -Dsonar.token=sqp_2250085c4b97c5e1d5e908221c4e0d2cf81c607c
                 echo 'Test Success'
             }
         }
+	}
         stage ('DEPLOY STAGE') {
             steps {
                 echo 'Deploy Success'
