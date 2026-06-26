@@ -10,7 +10,7 @@ pipeline {
 
         stage('PULL STAGE') {
             steps {
-                git 'https://github.com/vighnahari96/Mynew-Repo.git'
+                git branch: 'main', url: 'https://github.com/vighnahari96/Mynew-Repo.git'
                 echo 'PULL SUCCESS'
             }
         }
@@ -24,21 +24,25 @@ pipeline {
                 echo 'BUILD SUCCESS'
             }
         }
-        stage ('TEST STAGE') {
+
+        stage('TEST STAGE') {
             steps {
-            dir('backend') {
-	    stage ('TEST STAGE') {
-            steps {
-            dir('backend') {
-            sh 'mvn sonar:sonar   -Dsonar.projectKey=project-b29   -Dsonar.projectName='project-b29'   -Dsonar.host.url=http://13.205.97.14:9000    -Dsonar.token=sqp_2250085c4b97c5e1d5e908221c4e0d2cf81c607c''
-}
-                echo 'Test Success'
+                dir('backend') {
+                    sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=project-b29 \
+                        -Dsonar.projectName=project-b29 \
+                        -Dsonar.host.url=http://13.205.97.14:9000 \
+                        -Dsonar.token=sqp_2250085c4b97c5e1d5e908221c4e0d2cf81c607c
+                    '''
+                }
+                echo 'TEST SUCCESS'
             }
-             
-        }	
-        stage ('DEPLOY STAGE') {
+        }
+
+        stage('DEPLOY STAGE') {
             steps {
-                echo 'Deploy Success'
+                echo 'DEPLOY SUCCESS'
             }
         }
     }
