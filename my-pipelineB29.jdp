@@ -30,8 +30,8 @@ pipeline {
                     dir('backend') {
                         sh '''
                         mvn sonar:sonar \
-                        -Dsonar.projectKey=My-Project-B29 \
-                        -Dsonar.projectName="My-Project-B29"
+                        -Dsonar.projectKey=My Project-B29 \
+                        -Dsonar.projectName="My Project-B29"
                         '''
                     }
                 }
