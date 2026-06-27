@@ -24,16 +24,12 @@ pipeline {
             }
         }
 
-        stage('TEST STAGE') {
-            steps {
-                withSonarQubeEnv('sonar') {
-                    dir('backend') {
-                        sh '''
-                        mvn sonar:sonar \
-                        -Dsonar.projectKey=My Project-B29 \
-                        -Dsonar.projectName="My Project-B29"
-                        '''
-                    }
+          stage('TEST STAGE') {
+     		steps {
+        		dir('backend') {
+            		withSonarQubeEnv('sonar') {
+                	sh 'mvn sonar:sonar'
+                         }
                 }
                 echo 'Test Success'
             }
