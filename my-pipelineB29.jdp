@@ -33,13 +33,13 @@ pipeline {
         		-Dsonar.projectKey=My-Project-B29 \
         	       -Dsonar.projectName="My Project-B29"
     			'''
-			}	
+			}
                 }
                 echo 'Test Success'
             }
         }
      
-        stage('QUALITY-GATE') {
+        stage('QUALITY-GATE 1') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
