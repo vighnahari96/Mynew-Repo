@@ -32,7 +32,7 @@ pipeline {
   -Dsonar.projectKey=Project-B29 \\
   -Dsonar.projectName=\'Project-B29\' \\
   -Dsonar.host.url=http://13.205.97.14:9000 \\
-  -Dsonar.token=sqp_27f4952860143605af5497eb7069089e31741ea1'''    
+  -Dsonar.token=sqp_543cebadf0c7605b2fbc4d4eb8e078b5ac1bd584'''    
 		 }
                 echo 'TEST SUCCESS'
             }
