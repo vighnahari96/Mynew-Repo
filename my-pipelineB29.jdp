@@ -1,47 +1,57 @@
 pipeline {
     agent any
+
     environment {
         JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
+
     stages {
-        stage ('PULL STAGE') {
+
+        stage('PULL STAGE') {
             steps {
-	    https://github.com/vighnahari96/Mynew-Repo.git
                 echo 'Pull Success'
             }
         }
-        stage ('BUILD STAGE') {
+
+        stage('BUILD STAGE') {
             steps {
-	      dir('backend') {
-	      sh 'java-version'
-	      sh 'mvn clean package -DskipTests'
-	      }
-              echo 'Build Success'
+                dir('backend') {
+                    sh 'java -version'
+                    sh 'mvn clean package -DskipTests'
+                }
+                echo 'Build Success'
             }
         }
-        stage ('TEST STAGE') {
+
+        stage('TEST STAGE') {
             steps {
-	    withSonarQubeEnv('sonar') {
-	    dir('backend') {
-	    sh 'mvn sonar:sonar   -Dsonar.projectKey=My-Project-B29   -Dsonar.projectName="My Project-B29"\\ '
-	    }
-	    }
-            echo 'Test is Success'
-	   }
-        }
-	stage ('QUALITY-GATE') {
-	    steps {
-	        timeout(time: 2, unit: 'MINUTES') {
-		waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
-		echo 'QUALITY-PASSED'
-		}
+                withSonarQubeEnv('sonar') {
+                    dir('backend') {
+                        sh '''
+                        mvn sonar:sonar \
+                        -Dsonar.projectKey=My-Project-B29 \
+                        -Dsonar.projectName="My-Project-B29"
+                        '''
+                    }
+                }
+                echo 'Test Success'
             }
-	}
-        stage ('DEPLOY STAGE') {
+        }
+
+        stage('QUALITY-GATE') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
+                }
+                echo 'QUALITY PASSED'
+            }
+        }
+
+        stage('DEPLOY STAGE') {
             steps {
                 echo 'Deploy Success'
             }
         }
     }
-}    
+}
