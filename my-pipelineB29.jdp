@@ -29,7 +29,7 @@ pipeline {
             steps {
                 dir('backend') {
                     sh '''
-                        mvn clean verify sonar:sonar
+                        mvn sonar:sonar
                           -Dsonar.projectKey=My-Project-B29
                           -Dsonar.projectName="My Project-B29"
                           -Dsonar.host.url=http://13.205.97.14:9000
