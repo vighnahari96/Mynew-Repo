@@ -26,15 +26,19 @@ pipeline {
 
           stage('TEST STAGE') {
      		steps {
-        		dir('backend') {
-            		withSonarQubeEnv('sonar') {
-                	sh 'mvn sonar:sonar'
-                         }
+        	 withSonarQubeEnv('SonarQube') {
+    		     dir('backend') {
+			sh '''
+        		mvn sonar:sonar \
+        		-Dsonar.projectKey=My-Project-B29 \
+        	       -Dsonar.projectName="My Project-B29"
+    			'''
+			}	
                 }
                 echo 'Test Success'
             }
         }
-
+     
         stage('QUALITY-GATE') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
