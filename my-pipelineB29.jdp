@@ -8,7 +8,7 @@ pipeline {
 
     stages {
 
-        stage('PULL STAGE') {
+        stage('PULL STAGE 1') {
             steps {
                 git branch: 'main', url: 'https://github.com/vighnahari96/Mynew-Repo.git'
                 echo 'PULL SUCCESS'
