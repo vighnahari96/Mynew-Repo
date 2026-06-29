@@ -42,15 +42,16 @@ pipeline {
         stage('QUALITY-GATE 1') {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
-                    waitForQualityGate abortPipeline: true, credentialsId: 'sonar'
+                    waitForQualityGate abortPipeline: true, credentialsId: 'SonarQube'
                 }
                 echo 'QUALITY PASSED'
             }
         }
 
-        stage('DEPLOY STAGE') {
+        stage('CONTINUOUS DELIVERY') {
             steps {
-                echo 'Deploy Success'
+ 		 sh 'aws s3 cp /var/jennkins/workspace/my-project-pipeline/backend/target/student-registrations-backend-0.0.1-SNAPSHOT.JAR S3://my-jenkin-29/my-student-app-B29/' 
+                echo 'CONTINOUS-DELIEVERY-STAGE-SUCCESSFULL'
             }
         }
     }
