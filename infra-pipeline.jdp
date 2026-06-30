@@ -1,59 +1,37 @@
 pipeline {
-    agent any
-
-    stages {
-
-        stage('PULL STAGE') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/vighnahari96/Mynew-Repo.git'
-
+     agent any 
+       stages {
+         stage ('PULL STAGE') { 
+	   steps {
+                git 'https://github.com/vighnahari96/Mynew-Repo.git'
                 echo 'PULL SUCCESS'
-            }
-        }
+           }
+         }
+	 stage ('TERRAFORM-INIT & PLAN') {
+	   steps {
+	       sh '''
+	       terraform init -reconfigure
+	       terraform plan
+	       '''
+	    }
+	 }
 
-        stage('CHECK FILES') {
-            steps {
-                sh '''
-                    echo "Current Directory:"
-                    pwd
+	 stage ('APPROVAL') {
+	   steps {
+	       timeout(time: 30, unit: 'MINUTES') {
+                    input message: 'Approval is required. Shall we proceed?, OK : "Approve"'
+	   
+	       }
+	   }
+	 }
 
-                    echo "Files in Workspace:"
-                    ls -la
+	 stage ('TERRAFORM-APPLY') {
+	   steps { 
+	       sh '''
+	       terraform apply --auto-approve
+	       '''
+           }
+	 }
 
-                    echo "All Files:"
-                    find .
-                '''
-            }
-        }
-
-        stage('TERRAFORM INIT & PLAN') {
-            steps {
-                dir('terraform') {
-                    sh '''
-                        terraform init -reconfigure
-                        terraform plan
-                    '''
-                }
-            }
-        }
-
-        stage('APPROVAL') {
-            steps {
-                timeout(time: 30, unit: 'MINUTES') {
-                    input message: 'Approval is required. Shall we proceed?', ok: 'Approve'
-                }
-            }
-        }
-
-        stage('TERRAFORM APPLY') {
-            steps {
-                dir('terraform') {
-                    sh '''
-                        terraform apply --auto-approve
-                    '''
-                }
-            }
-        }
-    }
+       }
 }
