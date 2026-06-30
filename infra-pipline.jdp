@@ -4,7 +4,7 @@ pipeline {
          stage('PULL STAGE') {
             steps {
                 git branch: 'main', url: 'https://github.com/vighnahari96/Mynew-Repo.git'
-                echo 'PULL SUCCESS'
+	 	 echo 'PULL SUCCESS'
             }
         }
 	 stage('TERRAFORM-INIT & PLAN') {
