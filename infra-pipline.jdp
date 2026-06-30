@@ -1,0 +1,33 @@
+pipeline {
+    agnet any
+      stages{
+         stage('PULL STAGE') {
+            steps {
+                git branch: 'main', url: 'https://github.com/vighnahari96/Mynew-Repo.git'
+                echo 'PULL SUCCESS'
+            }
+        }
+	 stage('TERRAFORM-INIT & PLAN') {
+	    steps {
+	      sh '''
+	      terraform init -reconfigure
+	      terraform plan
+	      '''
+	    }
+        } 
+	 stage ('APPROVAL') {
+	   steps{
+	       timeout(time: 30 , units: 'MINUTES') {
+	            input message: 'Approval os requried. shall we processd?, ok : "Approve"'
+               }
+	    } 
+	}  
+	 Stage ('TERRAFORM-APPLY') {
+	  steps{
+	      sh'''
+	      terraform apply --auto-appprove
+	     
+	    }
+	  }
+       }
+}  
