@@ -54,10 +54,11 @@ pipeline {
         }     
           
         stage('CONTINUOUS DELIVERY') {
-            steps {
-                sh '''
-                aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar s3://my-jenkins-29/my-student-app-B29/
-                '''
+           steps {
+             sh 
+	      '''
+	      aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar s3://my-jenkins-29/my-student-app-B29/
+               	'''
                 echo 'CONTINUOUS-DELIEVERY-STAGE-SUCCESSFUL'
             }
         }
