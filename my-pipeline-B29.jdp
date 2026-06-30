@@ -57,7 +57,7 @@ pipeline {
             }
         }
 
-        stage('CONTINUOUS DELIVERY') {
+        stage('CONTINUOUS DELIVERY Success') {
             steps {
                 sh '''
                     aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar \
