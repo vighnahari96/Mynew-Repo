@@ -5,17 +5,36 @@ pipeline {
 
         stage('PULL STAGE') {
             steps {
-                git branch: 'main', url: 'https://github.com/vighnahari96/Mynew-Repo.git'
+                git branch: 'main',
+                    url: 'https://github.com/vighnahari96/Mynew-Repo.git'
+
                 echo 'PULL SUCCESS'
+            }
+        }
+
+        stage('CHECK FILES') {
+            steps {
+                sh '''
+                    echo "Current Directory:"
+                    pwd
+
+                    echo "Files in Workspace:"
+                    ls -la
+
+                    echo "All Files:"
+                    find .
+                '''
             }
         }
 
         stage('TERRAFORM INIT & PLAN') {
             steps {
-                sh '''
-                    terraform init -reconfigure
-                    terraform plan
-                '''
+                dir('terraform') {
+                    sh '''
+                        terraform init -reconfigure
+                        terraform plan
+                    '''
+                }
             }
         }
 
@@ -29,9 +48,11 @@ pipeline {
 
         stage('TERRAFORM APPLY') {
             steps {
-                sh '''
-                    terraform apply --auto-approve
-                '''
+                dir('terraform') {
+                    sh '''
+                        terraform apply --auto-approve
+                    '''
+                }
             }
         }
     }
