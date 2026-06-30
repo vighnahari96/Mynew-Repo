@@ -30,20 +30,23 @@ pipeline {
         }
 
         stage('TEST STAGE - SONARQUBE') {
-            steps {
-                dir('backend') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh '''
-                            mvn sonar:sonar \
-                            -Dsonar.projectKey=new-project \
-                            -Dsonar.projectName=new-project
-                        '''
-                    }
-                }
+           steps {
+               dir('backend') {
+                 withSonarQubeEnv('SonarQube') {
+                 withCredentials([string(credentialsId: 'sonar-token', variable: 'SONAR_TOKEN')]) {
+                     sh '''
+                         mvn sonar:sonar \
+                         -Dsonar.projectKey=new-project \
+                         -Dsonar.projectName=new-project \
+                         -Dsonar.token=$SONAR_TOKEN
+                     '''
+                  }  
+               }
+           }
 
-                echo 'SONAR SUCCESS'
-            }
-        }
+        echo 'SONAR SUCCESS'
+     }
+   } 
 
         stage('QUALITY-GATE') {
             steps {
