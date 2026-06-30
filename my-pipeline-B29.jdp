@@ -1,0 +1,65 @@
+pipeline {
+    agent any
+
+    environment {
+        JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
+        PATH = "${JAVA_HOME}/bin:${env.PATH}"
+    }
+     stages{
+        stage('PULL STAGE-GITHUB') {
+            steps {
+                git(
+                    branch: 'master',
+                    url: ''https://github.com/vighnahari96/Mynew-Repo.git
+                )
+
+                echo 'PULL SUCCESS'
+            }
+        }
+
+        stage('BUILD STAGE-MAVEN') {
+            steps {
+                dir('backend') {
+                    sh 'java -version'
+                    sh 'mvn -version'
+                    sh 'mvn clean package -DskipTests'
+                }
+
+                echo 'BUILD SUCCESS'
+            }
+        }
+
+        stage('TEST STAGE-SONARQUBE') {
+            steps {
+                dir('backend') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh '''
+                            mvn sonar:sonar \
+                            -Dsonar.projectKey=new-project \
+                            -Dsonar.projectName=new-project
+                        '''
+                    }
+                }
+
+                echo 'SONAR SUCCESS'
+            }
+        }
+        stage('QUALITY-GATE') {
+            steps {
+	        timeout(time: 5, unit: 'MINUTES') {
+		waitForQualityGate abortPipeline: true, credentialsId: 'SonarQube'
+                echo 'QUALITY-PASSED'
+                }
+	    }
+        }     
+          
+        stage('CONTINUOUS DELIVERY') {
+            steps {
+                sh '''
+                aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar s3://my-jenkins-29/my-student-app-B29/
+                '''
+                echo 'CONTINUOUS-DELIEVERY-STAGE-SUCCESSFUL'
+            }
+        }
+     }
+}                
