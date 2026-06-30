@@ -44,7 +44,7 @@ pipeline {
                }
            }
 
-        echo 'SONAR SUCCESS 1'
+        echo 'SONAR SUCCESS '
      }
    } 
 
