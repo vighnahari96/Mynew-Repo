@@ -5,19 +5,19 @@ pipeline {
         JAVA_HOME = "/usr/lib/jvm/java-17-openjdk-amd64"
         PATH = "${JAVA_HOME}/bin:${env.PATH}"
     }
-     stages{
-        stage('PULL STAGE-GITHUB') {
+
+    stages {
+
+        stage('PULL STAGE - GITHUB') {
             steps {
-                git(
-                    branch: 'master',
-                    url: ''https://github.com/vighnahari96/Mynew-Repo.git
-                )
+                git branch: 'master',
+                    url: 'https://github.com/vighnahari96/Mynew-Repo.git'
 
                 echo 'PULL SUCCESS'
             }
         }
 
-        stage('BUILD STAGE-MAVEN') {
+        stage('BUILD STAGE - MAVEN') {
             steps {
                 dir('backend') {
                     sh 'java -version'
@@ -29,7 +29,7 @@ pipeline {
             }
         }
 
-        stage('TEST STAGE-SONARQUBE') {
+        stage('TEST STAGE - SONARQUBE') {
             steps {
                 dir('backend') {
                     withSonarQubeEnv('SonarQube') {
@@ -44,23 +44,25 @@ pipeline {
                 echo 'SONAR SUCCESS'
             }
         }
-        stage('QUALITY-GATE 1') {
+
+        stage('QUALITY-GATE') {
             steps {
-	        timeout(time: 5, unit: 'MINUTES') {
-		waitForQualityGate abortPipeline: true, credentialsId: 'SonarQube'
-                echo 'QUALITY-PASSED'
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                    echo 'QUALITY-PASSED'
                 }
-	    }
-        }     
-          
-        stage('CONTINUOUS DELIVERY') {
-           steps {
-             sh 
-	      '''
-	      aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar s3://my-jenkins-29/my-student-app-B29/
-               	'''
-                echo 'CONTINUOUS-DELIEVERY-STAGE-SUCCESSFUL'
             }
         }
-     }
-}                
+
+        stage('CONTINUOUS DELIVERY') {
+            steps {
+                sh '''
+                    aws s3 cp /var/lib/jenkins/workspace/my-project-pipeline/backend/target/student-registration-backend-0.0.1-SNAPSHOT.jar \
+                    s3://my-jenkins-29/my-student-app-B29/
+                '''
+
+                echo 'CONTINUOUS DELIVERY STAGE SUCCESSFUL'
+            }
+        }
+    }
+}    
